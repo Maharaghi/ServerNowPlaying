@@ -1,0 +1,73 @@
+# If we need it, we can get MusicObject from here woooo
+from musicobject import MusicObject
+from os import makedirs, mkdir
+from embyparser import EmbyParse
+
+
+class DataManager:
+    _manager = None
+
+    def __init__(self):
+        self.music_objects = dict()
+
+        if DataManager._manager is None:
+            DataManager._manager = self
+
+    @staticmethod
+    def GetManager():
+        if not DataManager._manager:
+            return DataManager()
+        return DataManager._manager
+
+    def ParseRequest(self, request, **kwargs):
+        uuids = kwargs.get('uuids')
+        ua = request.user_agent.string.split('/')[0]
+        print("parse was called with ua {}!".format(ua))
+
+        music_obj = None
+        if ua == 'Emby Server':
+            music_obj = EmbyParse(request)
+
+        if music_obj is None:
+            return
+
+        if uuids is not None:
+            if music_obj.id not in uuids:
+                print('UUID was not in uuid list, filtering!')
+                return
+            else:
+                print('UUID found in filter list, allowing event')
+
+        if music_obj == self.music_objects.get(music_obj.user):
+            print("Objects were equal")
+            return
+
+        self.PrintMusicObject(music_obj)
+        self.OutputMusicObject(music_obj)
+        self.music_objects[music_obj.user] = music_obj
+
+    def GetMusicObject(self, user):
+        return self.music_objects.get(user)
+
+    def GetMusicObjects(self):
+        return list(self.music_objects.items())
+
+    def PrintMusicObject(self, data):
+        print("Printing object")
+        print("State: {}".format(data['state']))
+        print("Track: {}".format(data['track']))
+        print("Artists: {}".format(data['artist']))
+        print("Album: {}".format(data['album']))
+
+    def OutputMusicObject(self, data):
+        print("Writing object")
+        makedirs(data['id'], exist_ok=True)
+        self.WriteFile('{}/{}.txt'.format(data['id'], data['user']), str(data))
+        self.WriteFile('{}/state.txt'.format(data['id']), data['state'])
+        self.WriteFile('{}/track.txt'.format(data['id']), data['track'])
+        self.WriteFile('{}/artist.txt'.format(data['id']), data['artist'])
+        self.WriteFile('{}/album.txt'.format(data['id']), data['album'])
+
+    def WriteFile(self, file, data):
+        with open(file, 'w') as f:
+            f.writelines(data)
