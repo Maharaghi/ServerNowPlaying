@@ -1,5 +1,5 @@
 from musicobject import MusicObject
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from datamanager import DataManager
 
 from flask.wrappers import Response
@@ -17,6 +17,13 @@ def index():
 def userview(userid):
     music_object = manager.GetMusicObject(userid)
     return render_template('user.html', data=music_object)
+
+@app.route('/api/status/<userid>')
+def statusapi(userid):
+    data: MusicObject = manager.GetMusicObject(userid)
+    if data is None:
+        return Response(status=200)
+    return jsonify(data.to_json())
 
 @app.route('/hook', methods=['POST'])
 def hook():

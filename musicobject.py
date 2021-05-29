@@ -29,3 +29,6 @@ class MusicObject:
             return '{state}: {track} | {artist}{albumstr}'.format(state=self.state,track=self.track,artist=self.artist, albumstr=albumstr)
         else:
             return '{track} | {artist}{albumstr}'.format(track=self.track,artist=self.artist, albumstr=albumstr)
+
+    def to_json(self):
+        return self.__dict__.copy()
