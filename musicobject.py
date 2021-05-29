@@ -1,11 +1,12 @@
 class MusicObject:
-    def __init__(self, id='', user='', state='', track='', artist='', album=''):
+    def __init__(self, id='', user='', state='', track='', artist='', album='', image=None):
         self.id = id
         self.user = user
         self.state = state
         self.track = track
         self.artist = artist
         self.album = album
+        self.image = image
 
     def __getitem__(self, key):
         return self.__dict__.get(key)
