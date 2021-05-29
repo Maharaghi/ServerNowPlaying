@@ -31,7 +31,7 @@ class DataManager:
             music_obj = EmbyParse(request)
 
         if ua == 'PlexMediaServer':
-            music_obj = PlexParse(request, self.music_objects)
+            music_obj = PlexParse(request) # , self.music_objects)
 
         if music_obj is None:
             return
@@ -80,4 +80,8 @@ class DataManager:
         with open(file, 'w') as f:
             f.writelines(data)
     def WriteFileStorage(self, file, filestorage_obj):
-        filestorage_obj.save(file)
+        try:
+            filestorage_obj.save(file)
+            print('thumb.jpg write succeded')
+        except:
+            print('thumb.jpg write failed')
