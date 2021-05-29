@@ -73,12 +73,12 @@ class DataManager:
         self.WriteText('{}/state.txt'.format(uuid), data['state'])
 
         # skip redundant writes
-        if(data['state']!='Playing'):
+        if(data['state'] != 'Playing'):
             print('Writing object (light)')
             return
 
         # write out thumbnail if present
-        if(data['image']!=None):
+        if(data['image'] != None):
             print('Writing object (full w/ thumbnail)')
             self.WriteFileStorage('{}/thumb.jpg'.format(uuid), data['image'])
         else:
@@ -89,10 +89,10 @@ class DataManager:
         self.WriteText('{}/artist.txt'.format(uuid), data['artist'])
         self.WriteText('{}/album.txt'.format(uuid), data['album'])
 
-
     def WriteText(self, file, data):
         with open(file, 'w') as f:
             f.writelines(data)
+
     def WriteFileStorage(self, file, data):
         with open(file, 'wb') as f:
             f.write(data.getbuffer())
