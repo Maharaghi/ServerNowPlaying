@@ -14,7 +14,7 @@ def PlexParse(request, objects_db):
         state = 'Paused'
     elif(event=='media.play'):
         state = 'Playing'
-    elif(event=='media.resume'):
+    elif(event=='media.resume' or event=='media.scrobble'):
         state = 'Resumed'
     else:
         # ignore all other events / don't update the object
