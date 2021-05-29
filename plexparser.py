@@ -31,15 +31,15 @@ def PlexParse(request, objects_db):
     else:
         uuid = data['Account']['id']
 
-    if(uuid not in objects_db or objects_db[uuid]==None):
-        objects_db[uuid] = MusicObject()
-
     if('thumb' in request.files):
         print('Loading new thumbnail')
         image = io.BytesIO(b'')
         request.files['thumb'].save(image)
     else:
-        image = objects_db[uuid].image
+        if(uuid not in objects_db or objects_db[uuid]==None):
+            image = None
+        else:
+            image = objects_db[uuid].image
 
     return MusicObject(
         state  = state,
