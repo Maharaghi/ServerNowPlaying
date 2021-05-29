@@ -74,7 +74,7 @@ class DataManager:
         self.WriteText('{}/state.txt'.format(uuid), data['state'])
 
         # skip redundant writes
-        if(data['state'] != 'Playing'):
+        if(data['state'] != 'Playing' and self.music_objects.get(data['id']) is not None):
             print('Writing object (light)')
             return
 
@@ -91,7 +91,7 @@ class DataManager:
         self.WriteText('{}/album.txt'.format(uuid), data['album'])
 
     def WriteText(self, file, data):
-        if data is None: 
+        if data is None:
             data = '-'
         with open(file, 'w') as f:
             f.writelines(data)
