@@ -65,7 +65,7 @@ class DataManager:
         print("Artists: {}".format(data['artist']))
         print("Album: {}".format(data['album']))
 
-    def OutputMusicObject(self, data):
+    def OutputMusicObject(self, data: MusicObject):
 
         # sanitize uuid field before making directory
         uuid = re.sub('[^a-zA-Z0-9]', '', data['id'])
@@ -85,14 +85,14 @@ class DataManager:
         else:
             print('Writing object (full)')
 
-        self.WriteText('{}/{}.txt'.format(uuid, data['user']), str(data))
+        self.WriteText('{}/{}.txt'.format(uuid, data['user']), data.to_string())
         self.WriteText('{}/track.txt'.format(uuid), data['track'])
         self.WriteText('{}/artist.txt'.format(uuid), data['artist'])
         self.WriteText('{}/album.txt'.format(uuid), data['album'])
 
     def WriteText(self, file, data):
         if data is None:
-            data = '-'
+            data = ''
         with open(file, 'w') as f:
             f.writelines(data)
 
