@@ -31,7 +31,7 @@ class DataManager:
             music_obj = EmbyParse(request)
 
         if ua == 'PlexMediaServer':
-            music_obj = PlexParse(request)
+            music_obj = PlexParse(request, self.music_objects)
 
         if music_obj is None:
             return
@@ -68,12 +68,16 @@ class DataManager:
         print("Writing object")
         uuid = re.sub('[^a-zA-Z0-9]', '', data['id'])
         makedirs(uuid, exist_ok=True)
-        self.WriteFile('{}/{}.txt'.format(uuid, data['user']), str(data))
-        self.WriteFile('{}/state.txt'.format(uuid), data['state'])
-        self.WriteFile('{}/track.txt'.format(uuid), data['track'])
-        self.WriteFile('{}/artist.txt'.format(uuid), data['artist'])
-        self.WriteFile('{}/album.txt'.format(uuid), data['album'])
+        self.WriteText('{}/{}.txt'.format(uuid, data['user']), str(data))
+        self.WriteText('{}/state.txt'.format(uuid), data['state'])
+        self.WriteText('{}/track.txt'.format(uuid), data['track'])
+        self.WriteText('{}/artist.txt'.format(uuid), data['artist'])
+        self.WriteText('{}/album.txt'.format(uuid), data['album'])
+        if(data['image']!=None):
+            self.WriteFileStorage('{}/thumb.jpg'.format(uuid), data['image'])
 
-    def WriteFile(self, file, data):
+    def WriteText(self, file, data):
         with open(file, 'w') as f:
             f.writelines(data)
+    def WriteFileStorage(self, file, filestorage_obj):
+        filestorage_obj.save(file)

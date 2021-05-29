@@ -39,5 +39,6 @@ def EmbyParse(request):
             state  = state,
             track  = item.get('Name'),
             artist = artist,
-            album  = item.get('Album')
+            album  = item.get('Album'),
+            image  = None
         )

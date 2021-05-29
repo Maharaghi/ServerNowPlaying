@@ -1,7 +1,7 @@
 import json, re
 from musicobject import MusicObject
 
-def PlexParse(request):
+def PlexParse(request, objects_db):
 
     data = json.loads(request.form['payload'])
     if(data['Metadata']['type']!='track'):
@@ -29,11 +29,22 @@ def PlexParse(request):
     else:
         uuid = data['Account']['id']
 
+
+    user = data['Account']['title']
+    if(user not in objects_db or objects_db[user]==None):
+        objects_db[user] = MusicObject()
+
+    if('thumb' in request.files):
+        image = request.files['thumb']
+    else:
+        image = objects_db[user].image
+
     return MusicObject(
         state  = state,
         track  = data['Metadata']['title'],
         artist = artist,
         album  = data['Metadata']['parentTitle'],
         id     = uuid,
-        user   = data['Account']['title']
+        user   = user,
+        image  = image
     )
