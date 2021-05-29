@@ -31,17 +31,15 @@ def PlexParse(request, objects_db):
     else:
         uuid = data['Account']['id']
 
-
-    user = data['Account']['title']
-    if(user not in objects_db or objects_db[user]==None):
-        objects_db[user] = MusicObject()
-
     if('thumb' in request.files):
         print('Loading new thumbnail')
         image = io.BytesIO(b'')
         request.files['thumb'].save(image)
     else:
-        image = objects_db[user].image
+        if(uuid not in objects_db or objects_db[uuid]==None):
+            image = None
+        else:
+            image = objects_db[uuid].image
 
     return MusicObject(
         state  = state,
@@ -49,6 +47,6 @@ def PlexParse(request, objects_db):
         artist = artist,
         album  = data['Metadata']['parentTitle'],
         id     = uuid,
-        user   = user,
+        user   = data['Account']['title'],
         image  = image
     )

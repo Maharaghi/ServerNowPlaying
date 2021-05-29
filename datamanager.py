@@ -81,7 +81,7 @@ class DataManager:
         # write out thumbnail if present
         if(data['image'] != None):
             print('Writing object (full w/ thumbnail)')
-            self.WriteFileStorage('{}/thumb.jpg'.format(uuid), data['image'])
+            self.WriteByteIO('{}/thumb.jpg'.format(uuid), data['image'])
         else:
             print('Writing object (full)')
 
@@ -96,6 +96,6 @@ class DataManager:
         with open(file, 'w') as f:
             f.writelines(data)
 
-    def WriteFileStorage(self, file, data):
+    def WriteByteIO(self, file, data):
         with open(file, 'wb') as f:
             f.write(data.getbuffer())
