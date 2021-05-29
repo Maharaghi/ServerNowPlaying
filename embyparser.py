@@ -22,8 +22,10 @@ def EmbyParse(request):
             state = 'Stopped'
         elif (event == 'playback.pause'):
             state = 'Paused'
-        elif (event == 'playback.unpause' or event == "playback.start"):
+        elif (event == "playback.start"):
             state = 'Playing'
+        elif (event == 'playback.unpause'):
+            state = 'Resumed'
         else:
             # This is not a state we can handle yet, so just dont update the current state i guess
             return

@@ -1,7 +1,7 @@
-import json, re
+import json, re, io
 from musicobject import MusicObject
 
-def PlexParse(request): # , objects_db):
+def PlexParse(request, objects_db):
 
     data = json.loads(request.form['payload'])
     if(data['Metadata']['type']!='track'):
@@ -12,8 +12,10 @@ def PlexParse(request): # , objects_db):
         state = 'Stopped'
     elif(event=='media.pause'):
         state = 'Paused'
-    elif(event=='media.play' or event=='media.resume' or event=='media.scrobble'):
+    elif(event=='media.play'):
         state = 'Playing'
+    elif(event=='media.resume'):
+        state = 'Resumed'
     else:
         # ignore all other events / don't update the object
         return None
@@ -31,17 +33,15 @@ def PlexParse(request): # , objects_db):
 
 
     user = data['Account']['title']
-    #if(user not in objects_db or objects_db[user]==None):
-    #    objects_db[user] = MusicObject()
+    if(user not in objects_db or objects_db[user]==None):
+        objects_db[user] = MusicObject()
 
     if('thumb' in request.files):
-        print('New thumbnail found')
-        image = request.files['thumb']
-        #print(dir(image))
+        print('Loading new thumbnail')
+        image = io.BytesIO(b'')
+        request.files['thumb'].save(image)
     else:
-        #print('Copying old thumbnail')
-        image = None # objects_db[user].image
-        #print(dir(image))
+        image = objects_db[user].image
 
     return MusicObject(
         state  = state,
