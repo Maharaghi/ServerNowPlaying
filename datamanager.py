@@ -36,26 +36,27 @@ class DataManager:
         if music_obj is None:
             return
 
-        if uuids is not None:
+        if uuids is not None and len(uuids) > 0:
             if music_obj.id not in uuids:
                 print('UUID was not in uuid list, filtering!')
                 return
             else:
                 print('UUID found in filter list, allowing event')
 
-        if music_obj == self.music_objects.get(music_obj.user):
+        if music_obj == self.music_objects.get(music_obj.id):
             print("Objects were equal")
             return
 
         self.PrintMusicObject(music_obj)
         self.OutputMusicObject(music_obj)
-        self.music_objects[music_obj.user] = music_obj
+        print("Saving data")
+        self.music_objects[music_obj.id] = music_obj
 
-    def GetMusicObject(self, user):
-        return self.music_objects.get(user)
+    def GetMusicObject(self, userid):
+        return self.music_objects.get(userid)
 
     def GetMusicObjects(self):
-        return list(self.music_objects.items())
+        return list(self.music_objects.values())
 
     def PrintMusicObject(self, data):
         print("Printing object")
@@ -90,6 +91,8 @@ class DataManager:
         self.WriteText('{}/album.txt'.format(uuid), data['album'])
 
     def WriteText(self, file, data):
+        if data is None: 
+            data = '-'
         with open(file, 'w') as f:
             f.writelines(data)
 
