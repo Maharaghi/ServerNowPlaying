@@ -22,3 +22,10 @@ class MusicObject:
         
     def __str__(self) -> str:
         return str(self.__dict__.copy())
+
+    def to_string(self, include_state=False) -> str:
+        albumstr = '- {}'.format(self.album) if self.album is not None else ''
+        if include_state:
+            return '{state}: {track} | {artist}{albumstr}'.format(state=self.state,track=self.track,artist=self.artist, albumstr=albumstr)
+        else:
+            return '{track} | {artist}{albumstr}'.format(track=self.track,artist=self.artist, albumstr=albumstr)
