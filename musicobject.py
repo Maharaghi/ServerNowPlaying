@@ -1,5 +1,5 @@
 class MusicObject:
-    def __init__(self, id, user, state, track, artist, album):
+    def __init__(self, id='', user='', state='', track='', artist='', album=''):
         self.id = id
         self.user = user
         self.state = state

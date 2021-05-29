@@ -2,6 +2,8 @@
 from musicobject import MusicObject
 from os import makedirs, mkdir
 from embyparser import EmbyParse
+from plexparser import PlexParse
+import re
 
 
 class DataManager:
@@ -27,6 +29,9 @@ class DataManager:
         music_obj = None
         if ua == 'Emby Server':
             music_obj = EmbyParse(request)
+
+        if ua == 'PlexMediaServer':
+            music_obj = PlexParse(request)
 
         if music_obj is None:
             return
@@ -61,12 +66,13 @@ class DataManager:
 
     def OutputMusicObject(self, data):
         print("Writing object")
-        makedirs(data['id'], exist_ok=True)
-        self.WriteFile('{}/{}.txt'.format(data['id'], data['user']), str(data))
-        self.WriteFile('{}/state.txt'.format(data['id']), data['state'])
-        self.WriteFile('{}/track.txt'.format(data['id']), data['track'])
-        self.WriteFile('{}/artist.txt'.format(data['id']), data['artist'])
-        self.WriteFile('{}/album.txt'.format(data['id']), data['album'])
+        uuid = re.sub('[^a-zA-Z0-9]', '', data['id'])
+        makedirs(uuid, exist_ok=True)
+        self.WriteFile('{}/{}.txt'.format(uuid, data['user']), str(data))
+        self.WriteFile('{}/state.txt'.format(uuid), data['state'])
+        self.WriteFile('{}/track.txt'.format(uuid), data['track'])
+        self.WriteFile('{}/artist.txt'.format(uuid), data['artist'])
+        self.WriteFile('{}/album.txt'.format(uuid), data['album'])
 
     def WriteFile(self, file, data):
         with open(file, 'w') as f:

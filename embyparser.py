@@ -34,10 +34,10 @@ def EmbyParse(request):
             artist = ", ".join(artists)
 
         return MusicObject(
-            data['User']['Id'],
-            data['User']['ConnectUserName'],
-            state,
-            item.get('Name'),
-            artist,
-            item.get('Album')
+            id     = data['User']['Id'],
+            user   = data['User']['ConnectUserName'],
+            state  = state,
+            track  = item.get('Name'),
+            artist = artist,
+            album  = item.get('Album')
         )
