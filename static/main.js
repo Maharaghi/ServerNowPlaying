@@ -75,6 +75,17 @@
     //     });
     // }
 
+    function quickhash(str) {
+        var hash = 0, i, chr;
+        if (str.length === 0) return hash;
+        for (i = 0; i < str.length; i++) {
+            chr = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+    };
+
     function setData(data) {
         console.log(data);
 
@@ -87,8 +98,10 @@
             album.hidden = false;
         } else album.hidden = true;
 
-        if (data.image && thumbnail.src !== data.image) {
-            thumbnail.src = data.image;
+        const imsrc = data.image ? `${data.image}?id=${quickhash(data.track + data.artist)}` : '';
+
+        if (data.image && thumbnail.src !== imsrc) {
+            thumbnail.src = imsrc;
             thumbnail.hidden = false;
         } else if (lastData.track !== data.track && !data.image)
             thumbnail.hidden = true;

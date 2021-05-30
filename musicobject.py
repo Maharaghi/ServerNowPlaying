@@ -45,8 +45,8 @@ class MusicObject:
 
         if self.image:
             # This will set the url to the thumbnail we have saved
-            # obj['image'] = '/thumbnail/{}/thumb.jpg'.format(self.id)
+            obj['image'] = '/thumbnail/{}/thumb.jpg'.format(self.id)
             # This will send the entire image as base64
-            obj['image'] = 'data:image/jpg;base64,' + b64encode(self.image.getbuffer()).decode()
+            # obj['image'] = 'data:image/jpg;base64,' + b64encode(self.image.getbuffer()).decode()
 
         return obj
