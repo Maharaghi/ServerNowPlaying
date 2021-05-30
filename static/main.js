@@ -89,15 +89,52 @@
     function setData(data) {
         console.log(data);
 
-        updateIfNotEqual(state, 'State: ' + data.state);
-        updateIfNotEqual(track, 'Track: ' + data.track);
-        updateIfNotEqual(artist, 'Artist: ' + data.artist);
+        if(!filters.has('select')){
+            updateIfNotEqual(state, 'State: ' + data.state);
+            updateIfNotEqual(track, 'Track: ' + data.track);
+            updateIfNotEqual(artist, 'Artist: ' + data.artist);
 
-        if (data.album) {
-            updateIfNotEqual(album, 'Album: ' + data.album);
-            album.hidden = false;
-        } else album.hidden = true;
+            if (data.album) {
+                updateIfNotEqual(album, 'Album: ' + data.album);
+                album.hidden = false;
+            } else album.hidden = true;
 
+            setThumbnail(data);
+        }
+        else {
+            var selector = filters.get('select');
+            state.hidden     = selector === 'state';
+            track.hidden     = selector === 'track';
+            artist.hidden    = selector === 'artist';
+            album.hidden     = selector === 'album';
+            thumbnail.hidden = selector === 'thumbnail';
+
+            switch(selector) {
+                case 'state':
+                    updateIfNotEqual(state, data.state);
+                    break;
+                case 'track':
+                    updateIfNotEqual(track, data.track);
+                    break;
+                case 'artist':
+                    updateIfNotEqual(artist, data.artist);
+                    break;
+                case 'album':
+                    if (data.album) {
+                        updateIfNotEqual(album, data.album);
+                        album.hidden = false;
+                    } else album.hidden = true;
+                    break;
+                case 'thumbnail':
+                    setThumbnail(data);
+                    break;
+            }
+        }
+
+        lastData = data;
+    }
+
+    function setThumbnail(data) {
         const imsrc = data.image ? `${data.image}?id=${quickhash(data.track + data.artist)}` : '';
 
         if (data.image && thumbnail.src !== imsrc) {
@@ -105,8 +142,6 @@
             thumbnail.hidden = false;
         } else if (lastData.track !== data.track && !data.image)
             thumbnail.hidden = true;
-
-        lastData = data;
     }
 
     function setNoData() {
