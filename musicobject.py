@@ -1,5 +1,5 @@
 # If we use the base64 image->str, then we need this
-# from base64 import b64encode
+from base64 import b64encode
 
 class MusicObject:
     def __init__(self, id='', user='', state='', track='', artist='', album='', image=None):
@@ -45,8 +45,8 @@ class MusicObject:
 
         if self.image:
             # This will set the url to the thumbnail we have saved
-            obj['image'] = 'thumbnail/{}/thumb.jpg'.format(self.id)
+            # obj['image'] = '/thumbnail/{}/thumb.jpg'.format(self.id)
             # This will send the entire image as base64
-            # obj['image'] = 'data:image/png;base64,' + b64encode(self.image.getvalue()).decode()
+            obj['image'] = 'data:image/jpg;base64,' + b64encode(self.image.getbuffer()).decode()
 
         return obj
