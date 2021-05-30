@@ -51,6 +51,7 @@ class DataManager:
         self.OutputMusicObject(music_obj)
         print("Saving data")
         self.music_objects[music_obj.id] = music_obj
+        return music_obj
 
     def GetMusicObject(self, userid):
         return self.music_objects.get(userid)

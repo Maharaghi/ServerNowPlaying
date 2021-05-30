@@ -41,40 +41,81 @@
         return true;
     }
 
-    function fetchData() {
-        window.fetch(`/api/status/${id}`).then(r => r.json()).then(data => {
-            if (!data || data === 'None') return;
-            if (shallowEqual(data, lastData)) return;
+    // function fetchData() {
+    //     window.fetch(`/api/status/${id}`).then(r => r.json()).then(data => {
+    //         if (!data || data === 'None') return;
+    //         if (shallowEqual(data, lastData)) return;
 
-            console.log(data);
+    //         console.log(data);
 
-            updateIfNotEqual(state, 'State: ' + data.state);
-            updateIfNotEqual(track, 'Track: ' + data.track);
-            updateIfNotEqual(artist, 'Artist: ' + data.artist);
+    //         updateIfNotEqual(state, 'State: ' + data.state);
+    //         updateIfNotEqual(track, 'Track: ' + data.track);
+    //         updateIfNotEqual(artist, 'Artist: ' + data.artist);
 
-            if (data.album) {
-                updateIfNotEqual(album, 'Album: ' + data.album);
-                album.hidden = false;
-            } else album.hidden = true;
+    //         if (data.album) {
+    //             updateIfNotEqual(album, 'Album: ' + data.album);
+    //             album.hidden = false;
+    //         } else album.hidden = true;
 
-            if (data.image && thumbnail.src !== data.image) {
-                thumbnail.src = data.image;
-                thumbnail.hidden = false;
-            } else if (lastData.track !== data.track) 
-                thumbnail.hidden = true;
+    //         if (data.image && thumbnail.src !== data.image) {
+    //             thumbnail.src = data.image;
+    //             thumbnail.hidden = false;
+    //         } else if (lastData.track !== data.track && !data.image)
+    //             thumbnail.hidden = true;
 
-            lastData = data;
-        }).catch((e) => {
-            console.error(e);
-            // Assume we failed to parse JSON data, and thus no info exist
-            updateIfNotEqual(state, 'No data :(');
-            updateIfNotEqual(track, 'Try playing something');
-            updateIfNotEqual(artist, '');
-            updateIfNotEqual(album, '');
+    //         lastData = data;
+    //     }).catch((e) => {
+    //         console.error(e);
+    //         // Assume we failed to parse JSON data, and thus no info exist
+    //         updateIfNotEqual(state, 'No data :(');
+    //         updateIfNotEqual(track, 'Try playing something');
+    //         updateIfNotEqual(artist, '');
+    //         updateIfNotEqual(album, '');
+    //         thumbnail.hidden = true;
+    //     });
+    // }
+
+    function setData(data) {
+        console.log(data);
+
+        updateIfNotEqual(state, 'State: ' + data.state);
+        updateIfNotEqual(track, 'Track: ' + data.track);
+        updateIfNotEqual(artist, 'Artist: ' + data.artist);
+
+        if (data.album) {
+            updateIfNotEqual(album, 'Album: ' + data.album);
+            album.hidden = false;
+        } else album.hidden = true;
+
+        if (data.image && thumbnail.src !== data.image) {
+            thumbnail.src = data.image;
+            thumbnail.hidden = false;
+        } else if (lastData.track !== data.track && !data.image)
             thumbnail.hidden = true;
-        });
+
+        lastData = data;
     }
 
-    setInterval(fetchData, 2500);
-    fetchData();
+    function setNoData() {
+        updateIfNotEqual(state, 'No data :(');
+        updateIfNotEqual(track, 'Try playing something');
+        updateIfNotEqual(artist, '');
+        updateIfNotEqual(album, '');
+        thumbnail.hidden = true;
+    }
+
+    // setInterval(fetchData, 2500);
+    // fetchData();
+    const socket = io();
+    socket.on('connect', () => {
+        socket.emit('status', id);
+        socket.emit('join', id);
+    });
+
+    socket.on('join', console.log);
+    socket.on('status', (data) => {
+        if (!data || data === 'None') return setNoData();
+        if (shallowEqual(data, lastData)) return;
+        setData(data);
+    });
 })();
