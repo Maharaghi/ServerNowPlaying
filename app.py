@@ -1,3 +1,4 @@
+from flask.helpers import send_from_directory
 from musicobject import MusicObject
 from flask import Flask, request, render_template, jsonify
 from datamanager import DataManager
@@ -12,6 +13,10 @@ manager = DataManager()
 def index():
     users = manager.GetMusicObjects()
     return render_template('index.html', data=users)
+
+@app.route('/thumbnail/<userid>/<path:filename>')
+def thumbnails(userid, filename):
+    return send_from_directory(userid, filename)
 
 @app.route('/status/<userid>')
 def userview(userid):
