@@ -1,5 +1,6 @@
 # If we use the base64 image->str, then we need this
 from base64 import b64encode
+import re
 
 class MusicObject:
     def __init__(self, id='', user='', state='', track='', artist='', album='', image=None):
