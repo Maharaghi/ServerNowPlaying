@@ -4,7 +4,9 @@
 *.txt
 *.json
 *.rar
+**/*.jpg
 .vscode
+!requirements.txt
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
