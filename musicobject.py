@@ -3,7 +3,7 @@ from base64 import b64encode
 
 class MusicObject:
     def __init__(self, id='', user='', state='', track='', artist='', album='', image=None):
-        self.id = id
+        self.id = re.sub('[^a-zA-Z0-9]', '', id)
         self.user = user
         self.state = state
         self.track = track
