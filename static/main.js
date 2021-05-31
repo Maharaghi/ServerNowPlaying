@@ -103,11 +103,11 @@
         }
         else {
             var selector = filters.get('select');
-            state.hidden     = selector === 'state';
-            track.hidden     = selector === 'track';
-            artist.hidden    = selector === 'artist';
-            album.hidden     = selector === 'album';
-            thumbnail.hidden = selector === 'thumbnail';
+            state.hidden     = selector != 'state';
+            track.hidden     = selector != 'track';
+            artist.hidden    = selector != 'artist';
+            album.hidden     = selector != 'album';
+            thumbnail.hidden = selector != 'thumbnail';
 
             switch(selector) {
                 case 'state':
