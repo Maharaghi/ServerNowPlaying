@@ -48,7 +48,8 @@ class DataManager:
             return
 
         self.PrintMusicObject(music_obj)
-        self.OutputMusicObject(music_obj)
+        ## disabled writing to disk since everything's in memory now
+        ##self.OutputMusicObject(music_obj)
         print("Saving data")
         self.music_objects[music_obj.id] = music_obj
         return music_obj

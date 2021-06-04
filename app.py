@@ -1,5 +1,6 @@
 from typing import MutableSequence
-from flask.helpers import send_from_directory
+from flask.helpers import send_file
+import io
 from musicobject import MusicObject
 from flask import Flask, request, render_template, jsonify
 from flask_socketio import SocketIO, join_room, namespace, send, emit
@@ -41,7 +42,9 @@ def index():
 
 @app.route('/thumbnail/<userid>/<path:filename>')
 def thumbnails(userid, filename):
-    return send_from_directory(userid, filename)
+    thumb = io.BytesIO(manager.GetMusicObject(userid).image.getbuffer())
+    return send_file(thumb,mimetype='image/jpg')
+    # return send_from_directory(userid, filename)
 
 
 @app.route('/status/<userid>')
