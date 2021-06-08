@@ -1,6 +1,6 @@
+import argparse, io
 from typing import MutableSequence
 from flask.helpers import send_file
-import io
 from musicobject import MusicObject
 from flask import Flask, request, render_template, jsonify
 from flask_socketio import SocketIO, join_room, namespace, send, emit
@@ -13,6 +13,24 @@ socketio = SocketIO(app)
 
 manager = DataManager()
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Run a webhook server for Emby & Plex servers to expose playback info')
+    parser.add_argument(
+        '--host', 
+        metavar='H', 
+        type=str, 
+        default='localhost',
+        help='The webhook server address'
+    )
+    parser.add_argument(
+        '--port',
+        metavar='P',
+        type=str,
+        default='5000',
+        help='The webhook server port'
+    )
+    args = parser.parse_args()
+    socketio.run(app, host=vars(args)['host'], port=vars(args)['port'])
 
 @socketio.on('message')
 def handle_message(data):
@@ -83,7 +101,3 @@ def comma_separated_params_to_list(param):
         if val:
             result.append(val)
     return result
-
-
-if __name__ == '__main__':
-    socketio.run(app)
