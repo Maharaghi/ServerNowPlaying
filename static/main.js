@@ -1,13 +1,13 @@
 // Do not pollute global scope
 (() => {
-    // Slice the pathname to get the id that we use to update
-    const id = window.location.pathname.slice(window.location.pathname.indexOf('/status') + '/status'.length + 1);
+    // Use regex to get ID from url
+    const re = /^(?:\/status\/)(\w+)\/?.*/gm;
+    const testId = re.exec(window.location.pathname);
+    if (!testId || testId.length < 2) return alert('No id found? wtf?');
+    const [, id] = testId;
 
     // This could be used to create filters such as show,hide etc.
     const filters = new URLSearchParams(window.location.search);
-
-    console.log(id);
-    console.log(Array.from(filters.keys()));
 
     // Create references to the elements that we update
     const state = document.querySelector('#state');
@@ -41,42 +41,8 @@
         return true;
     }
 
-    // function fetchData() {
-    //     window.fetch(`/api/status/${id}`).then(r => r.json()).then(data => {
-    //         if (!data || data === 'None') return;
-    //         if (shallowEqual(data, lastData)) return;
-
-    //         console.log(data);
-
-    //         updateIfNotEqual(state, 'State: ' + data.state);
-    //         updateIfNotEqual(track, 'Track: ' + data.track);
-    //         updateIfNotEqual(artist, 'Artist: ' + data.artist);
-
-    //         if (data.album) {
-    //             updateIfNotEqual(album, 'Album: ' + data.album);
-    //             album.hidden = false;
-    //         } else album.hidden = true;
-
-    //         if (data.image && thumbnail.src !== data.image) {
-    //             thumbnail.src = data.image;
-    //             thumbnail.hidden = false;
-    //         } else if (lastData.track !== data.track && !data.image)
-    //             thumbnail.hidden = true;
-
-    //         lastData = data;
-    //     }).catch((e) => {
-    //         console.error(e);
-    //         // Assume we failed to parse JSON data, and thus no info exist
-    //         updateIfNotEqual(state, 'No data :(');
-    //         updateIfNotEqual(track, 'Try playing something');
-    //         updateIfNotEqual(artist, '');
-    //         updateIfNotEqual(album, '');
-    //         thumbnail.hidden = true;
-    //     });
-    // }
-
     function quickhash(str) {
-        var hash = 0, i, chr;
+        let hash = 0, i, chr;
         if (str.length === 0) return hash;
         for (i = 0; i < str.length; i++) {
             chr = str.charCodeAt(i);
@@ -89,7 +55,7 @@
     function setData(data) {
         console.log(data);
 
-        if(!filters.has('select')){
+        if (!filters.has('select')) {
             updateIfNotEqual(state, 'State: ' + data.state);
             updateIfNotEqual(track, 'Track: ' + data.track);
             updateIfNotEqual(artist, 'Artist: ' + data.artist);
@@ -102,14 +68,14 @@
             setThumbnail(data);
         }
         else {
-            var selector = filters.get('select');
-            state.hidden     = selector !== 'state';
-            track.hidden     = selector !== 'track';
-            artist.hidden    = selector !== 'artist';
-            album.hidden     = selector !== 'album';
+            const selector = filters.get('select');
+            state.hidden = selector !== 'state';
+            track.hidden = selector !== 'track';
+            artist.hidden = selector !== 'artist';
+            album.hidden = selector !== 'album';
             thumbnail.hidden = selector !== 'thumbnail';
 
-            switch(selector) {
+            switch (selector) {
                 case 'state':
                     updateIfNotEqual(state, data.state);
                     break;
@@ -135,7 +101,7 @@
     }
 
     function setThumbnail(data) {
-        var album = (data.album) ? data.album : '';
+        const album = (data.album) ? data.album : '';
         const imsrc = data.image ? `${data.image}?id=${quickhash(data.track + data.artist + album)}` : '';
 
         if (data.image && thumbnail.src !== imsrc) {
@@ -153,8 +119,6 @@
         thumbnail.hidden = true;
     }
 
-    // setInterval(fetchData, 2500);
-    // fetchData();
     const socket = io();
     socket.on('connect', () => {
         socket.emit('status', id);

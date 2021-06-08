@@ -4,32 +4,21 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>User template</title>
+    <title>ServerNowPlaying - User</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <!-- <link rel='stylesheet' type='text/css' media='screen' href='main.css'> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+        crossorigin="anonymous"></script>
     <script type="module" src='/static/main.js'></script>
 </head>
 
 <body>
     <p id="state">No data :(</p>
-    <p id="track">Maybe try playing something!</p>
+    <p id="track">Try playing something</p>
     <p id="artist"></p>
     <p id="album"></p>
     <img id="thumbnail" src="" hidden></img>
-    <!-- {% if data %}
-    <p id="state">State: {{ data['state'] }}</p>
-    <p id="track">Track: {{ data['track'] }}</p>
-    <p id="artist">Artist: {{ data['artist'] }}</p>
-    <p id="album">Album: {{ data['album'] }}</p>
-    <img id="thumbnail" src="{{ data['image'] }}">Album: {{ data['album'] }}</img>
-    {% else %}
-    <p id="state">No data :(</p>
-    <p id="track">Maybe try playing something!</p>
-    <p id="artist"></p>
-    <p id="album"></p>
-    <img id="thumbnail" src=""></img>
-    {% endif %} -->
 </body>
 
 </html>
