@@ -1,4 +1,5 @@
-import argparse, io
+import argparse
+import io
 from typing import MutableSequence
 from flask.helpers import send_file
 from musicobject import MusicObject
@@ -16,9 +17,9 @@ manager = DataManager()
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run a webhook server for Emby & Plex servers to expose playback info')
     parser.add_argument(
-        '--host', 
-        metavar='H', 
-        type=str, 
+        '--host',
+        metavar='H',
+        type=str,
         default='localhost',
         help='The webhook server address'
     )
@@ -32,10 +33,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     socketio.run(app, host=vars(args)['host'], port=vars(args)['port'])
 
+
 @socketio.on('message')
 def handle_message(data):
     print('received message: ' + data)
     emit('message', 'testmessage')
+
 
 @socketio.on('status')
 def handle_status(id):
@@ -44,13 +47,16 @@ def handle_status(id):
         obj = obj.to_json()
     emit('status', obj)
 
+
 @socketio.on('join')
 def handle_join(id):
     join_room(id)
     emit('join', id)
 
+
 def send_status(id, data):
     socketio.emit('status', data, room=id)
+
 
 @app.route('/')
 def index():
@@ -61,7 +67,7 @@ def index():
 @app.route('/thumbnail/<userid>/<path:filename>')
 def thumbnails(userid, filename):
     thumb = io.BytesIO(manager.GetMusicObject(userid).image.getbuffer())
-    return send_file(thumb,mimetype='image/jpg')
+    return send_file(thumb, mimetype='image/jpg')
     # return send_from_directory(userid, filename)
 
 
@@ -69,6 +75,19 @@ def thumbnails(userid, filename):
 def userview(userid):
     music_object = manager.GetMusicObject(userid)
     return render_template('user.html', data=music_object)
+
+@app.route('/status/<userid>/<item>')
+def partialview(userid, item):
+    music_object = manager.GetMusicObject(userid)
+    # Uncomment this if you want to render the original page (with all data) if the target attribute doesn't exist
+    # if item is None or (not hasattr(music_object, item) and item != "image"):
+    #     return render_template('user.html', data=music_object)
+    return render_template('partial.html', data=music_object)
+
+# @app.route('/status/<userid>')
+# def userview(userid):
+#     music_object = manager.GetMusicObject(userid)
+#     return render_template('user.html', data=music_object)
 
 
 @app.route('/api/status/<userid>')
